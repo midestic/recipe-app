@@ -1,0 +1,8 @@
+.container {
+  /* border: 1px solid black; */
+  /* overflow: hidden; */
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
