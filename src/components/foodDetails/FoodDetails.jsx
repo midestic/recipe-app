@@ -3,7 +3,7 @@ import styles from "./FoodDetails.module.css";
 import IngredientMap from "../IngredientMap/IngredientMap";
 
 export default function FoodDetails({ foodId }) {
-  let [details, setDetails] = useState({
+  const [details, setDetails] = useState({
     title: "",
     image: "",
     readyInMinutes: 0,
@@ -13,12 +13,19 @@ export default function FoodDetails({ foodId }) {
     pricePerServing: 0,
     analyzedInstructions: [{ steps: [] }],
   });
-  let [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  let URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
+  const URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
   const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
+    if (!apiKey) {
+      setError("API key is missing");
+      setIsLoading(false);
+      return;
+    }
+
     async function getDetails() {
       try {
         let res = await fetch(`${URL}?apiKey=${apiKey}`);
@@ -26,16 +33,23 @@ export default function FoodDetails({ foodId }) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         let data = await res.json();
-        console.log(data);
         setDetails(data);
       } catch (error) {
-        console.error("Error fetching recipe details:", error);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
     }
     getDetails();
-  }, [foodId]);
+  }, [foodId, URL, apiKey]);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className={styles.FoodDetails}>
@@ -74,9 +88,7 @@ export default function FoodDetails({ foodId }) {
       <div>
         <h2>Instructions</h2>
         <ol>
-          {isLoading ? (
-            <p>Loading......</p>
-          ) : details.analyzedInstructions?.[0]?.steps?.length ? (
+          {details.analyzedInstructions?.[0]?.steps?.length ? (
             details.analyzedInstructions[0].steps.map((step) => (
               <li key={step.number}>{step.step}</li>
             ))
