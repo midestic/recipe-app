@@ -7,11 +7,10 @@ export default function FoodDetails({ foodId }) {
   let [isLoading, setIsLoading] = useState(true);
 
   let URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
-  let API_KEY = "1182711e8549465494248b6991f6c6b6";
-
+  const apiKey = import.meta.env.VITE_API_KEY;
   useEffect(() => {
     async function getDetails() {
-      let res = await fetch(`${URL}?apiKey=${API_KEY}`);
+      let res = await fetch(`${URL}?apiKey=${apiKey}`);
       let data = await res.json();
 
       console.log(data);

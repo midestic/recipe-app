@@ -1,8 +1,33 @@
 .navBar {
   width: 100%;
-  font-size: 2em;
-  text-align: center;
+  font-size: 1em;
+  /* text-align: center; */
   color: #393246;
   padding: 30px;
   box-shadow: 0px 0px 10px rgb(0, 0, 0, 0.5);
+  display: inline-block;
+}
+
+.navBar h1 {
+  font-weight: bolder;
+  color: #393246;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  /* border-right: 5px solid; */
+  font-size: 2em;
+  letter-spacing: 10px;
+  animation: typing 2s steps(14), cursor 0.4s step-end infinite alternate;
+}
+
+@keyframes cursor {
+  50% {
+    border-color: transparent;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
 }

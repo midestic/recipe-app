@@ -5,11 +5,10 @@ export default function ({ foodData, setFoodData }) {
   const [query, setQuery] = useState("pizza");
 
   const URL = "https://api.spoonacular.com/recipes/complexSearch";
-  const API_KEY = "1182711e8549465494248b6991f6c6b6";
-
+  const apiKey = import.meta.env.VITE_API_KEY;
   useEffect(() => {
     async function getFoodData() {
-      let res = await fetch(`${URL}?query=${query}&apiKey=${API_KEY} `);
+      let res = await fetch(`${URL}?query=${query}&apiKey=${apiKey} `);
       let data = await res.json();
 
       setFoodData(data.results);

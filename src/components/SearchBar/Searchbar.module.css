@@ -7,11 +7,12 @@
 
 .inputbar {
   border: none;
-  border-bottom: 1px solid #e3e4dc;
+  border: 2px solid #29bb89;
   padding: 10px 20px;
   width: 50%;
   outline: none;
   font-size: 16px;
   color: #393e46;
   font-weight: bolder;
+  border-radius: 50px;
 }
