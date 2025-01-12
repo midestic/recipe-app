@@ -3,24 +3,34 @@ import styles from "./FoodDetails.module.css";
 import IngredientMap from "../IngredientMap/IngredientMap";
 
 export default function FoodDetails({ foodId }) {
-  let [details, setDetails] = useState({});
+  let [details, setDetails] = useState({
+    title: "",
+    image: "",
+    readyInMinutes: 0,
+    servings: 0,
+    vegetarian: false,
+    vegan: false,
+    pricePerServing: 0,
+    analyzedInstructions: [{ steps: [] }],
+  });
   let [isLoading, setIsLoading] = useState(true);
 
-  const URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
+  let URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
   const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
     async function getDetails() {
       try {
         let res = await fetch(`${URL}?apiKey=${apiKey}`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
         let data = await res.json();
-
-        console.log("API Response: ", data);
-
+        console.log(data);
         setDetails(data);
-        setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching recipe details: ", error);
+        console.error("Error fetching recipe details:", error);
+      } finally {
         setIsLoading(false);
       }
     }
@@ -29,26 +39,33 @@ export default function FoodDetails({ foodId }) {
 
   return (
     <div className={styles.FoodDetails}>
-      <h1 className={styles.recipeName}>{details.title || "Recipe Details"}</h1>
+      <h1 className={styles.recipeName}>{details.title}</h1>
       <div className={styles.recipeCard}>
         <img
-          src={details.image || "/placeholder-image.jpg"}
+          src={details.image}
           className={styles.recipeImage}
           alt="food-recipe"
         />
         <div className={styles.recipeDetails}>
           <span>
-            <strong>⌚ {details.readyInMinutes || "N/A"} Minutes</strong>
+            <strong>⌚ {details.readyInMinutes} Minutes</strong>
           </span>
-          <strong> 👨‍👩‍👧 Serves {details.servings || "N/A"} </strong>
+          <strong> 👨‍👩‍👧 Serves {details.servings} </strong>
           <span>
             {details.vegetarian ? " 🥕Vegetarian" : " 🍖 Non-Vegetarian"}
           </span>
-          <span> {details.vegan ? "🐄  Vegan" : ""}</span>
+          <span> {details.vegan ? "🐄 Vegan" : ""}</span>
         </div>
         <div className={styles.details}>
           <span>
-            <b> 💲{details.pricePerServing / 100 || "N/A"} Per Serving</b>
+            <b>
+              {" "}
+              💲
+              {details.pricePerServing
+                ? (details.pricePerServing / 100).toFixed(2)
+                : "N/A"}{" "}
+              Per Serving
+            </b>
           </span>
         </div>
       </div>
@@ -59,14 +76,12 @@ export default function FoodDetails({ foodId }) {
         <ol>
           {isLoading ? (
             <p>Loading......</p>
-          ) : details.analyzedInstructions &&
-            details.analyzedInstructions.length > 0 &&
-            details.analyzedInstructions[0].steps ? (
+          ) : details.analyzedInstructions?.[0]?.steps?.length ? (
             details.analyzedInstructions[0].steps.map((step) => (
               <li key={step.number}>{step.step}</li>
             ))
           ) : (
-            <p>Instructions are not available for this recipe.</p>
+            <p>No instructions available.</p>
           )}
         </ol>
       </div>
