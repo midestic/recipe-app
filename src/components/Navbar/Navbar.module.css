@@ -14,10 +14,10 @@
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
-  /* border-right: 5px solid; */
+  border-right: 5px solid;
   font-size: 2em;
-  letter-spacing: 10px;
-  animation: typing 2s steps(14), cursor 0.4s step-end infinite alternate;
+  letter-spacing: 5px;
+  animation: typing 5s steps(13), cursor 0.4s step-end infinite alternate;
 }
 
 @keyframes cursor {
