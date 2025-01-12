@@ -1,6 +1,6 @@
 import IngredientList from "../ingredientList/IngredientList";
 
-export default function ({ details, isLoading }) {
+export default function IngredientMap({ details, isLoading }) {
   return (
     <div>
       {isLoading ? (
