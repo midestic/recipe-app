@@ -6,35 +6,41 @@ export default function FoodDetails({ foodId }) {
   let [details, setDetails] = useState({});
   let [isLoading, setIsLoading] = useState(true);
 
-  let URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
+  const URL = `https://api.spoonacular.com/recipes/${foodId}/information`;
   const apiKey = import.meta.env.VITE_API_KEY;
+
   useEffect(() => {
     async function getDetails() {
-      let res = await fetch(`${URL}?apiKey=${apiKey}`);
-      let data = await res.json();
+      try {
+        let res = await fetch(`${URL}?apiKey=${apiKey}`);
+        let data = await res.json();
 
-      console.log(data);
+        console.log("API Response: ", data);
 
-      setDetails(data);
-      setIsLoading(false);
+        setDetails(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching recipe details: ", error);
+        setIsLoading(false);
+      }
     }
     getDetails();
   }, [foodId]);
 
   return (
     <div className={styles.FoodDetails}>
-      <h1 className={styles.recipeName}>{details.title}</h1>
+      <h1 className={styles.recipeName}>{details.title || "Recipe Details"}</h1>
       <div className={styles.recipeCard}>
         <img
-          src={details.image}
+          src={details.image || "/placeholder-image.jpg"}
           className={styles.recipeImage}
           alt="food-recipe"
         />
         <div className={styles.recipeDetails}>
           <span>
-            <strong>⌚ {details.readyInMinutes} Minutes</strong>
+            <strong>⌚ {details.readyInMinutes || "N/A"} Minutes</strong>
           </span>
-          <strong> 👨‍👩‍👧 Serves {details.servings} </strong>
+          <strong> 👨‍👩‍👧 Serves {details.servings || "N/A"} </strong>
           <span>
             {details.vegetarian ? " 🥕Vegetarian" : " 🍖 Non-Vegetarian"}
           </span>
@@ -42,7 +48,7 @@ export default function FoodDetails({ foodId }) {
         </div>
         <div className={styles.details}>
           <span>
-            <b> 💲{details.pricePerServing / 100} Per Serving</b>
+            <b> 💲{details.pricePerServing / 100 || "N/A"} Per Serving</b>
           </span>
         </div>
       </div>
@@ -53,10 +59,14 @@ export default function FoodDetails({ foodId }) {
         <ol>
           {isLoading ? (
             <p>Loading......</p>
-          ) : (
+          ) : details.analyzedInstructions &&
+            details.analyzedInstructions.length > 0 &&
+            details.analyzedInstructions[0].steps ? (
             details.analyzedInstructions[0].steps.map((step) => (
               <li key={step.number}>{step.step}</li>
             ))
+          ) : (
+            <p>Instructions are not available for this recipe.</p>
           )}
         </ol>
       </div>
